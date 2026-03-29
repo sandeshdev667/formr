@@ -4,172 +4,184 @@ export default function Home() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div style={{ backgroundColor: '#F5F4EF', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
 
       {/* Navbar */}
-      <div className="px-6 py-5 flex items-center justify-between max-w-5xl mx-auto">
-        <h1 className="text-lg font-medium text-gray-900">Formr</h1>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.push('/login')}
-            className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            Sign in
-          </button>
-          <button
-            onClick={() => router.push('/login')}
-            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors"
-          >
-            Get started
-          </button>
+      <nav style={{ borderBottom: '1px solid #DDDDD6' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '18px', fontWeight: '600', color: '#0A0A0A', letterSpacing: '-0.3px' }}>Formr</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button
+              onClick={() => router.push('/login')}
+              style={{ background: 'none', border: 'none', fontSize: '14px', color: '#6B6B5E', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+            >
+              Sign in
+            </button>
+            <button
+              onClick={() => router.push('/login')}
+              style={{ backgroundColor: '#1A7A4A', color: 'white', border: 'none', borderRadius: '10px', padding: '10px 20px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+            >
+              Get started
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
       {/* Hero */}
-      <div className="max-w-3xl mx-auto px-6 pt-24 pb-20 text-center">
-        <div className="inline-block bg-gray-50 border border-gray-100 text-xs text-gray-500 px-3 py-1.5 rounded-full mb-8">
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '96px 24px 80px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-block', backgroundColor: '#EEEDE7', border: '1px solid #DDDDD6', borderRadius: '100px', padding: '6px 14px', fontSize: '12px', color: '#6B6B5E', marginBottom: '32px', letterSpacing: '0.02em' }}>
           Simple forms. Real responses.
         </div>
-        <h2 className="text-5xl font-medium text-gray-900 leading-tight mb-6">
+        <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '64px', fontWeight: '400', color: '#0A0A0A', lineHeight: '1.1', marginBottom: '24px', letterSpacing: '-1px' }}>
           The cleanest way to<br />collect feedback
-        </h2>
-        <p className="text-lg text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed">
+        </h1>
+        <p style={{ fontSize: '18px', color: '#6B6B5E', marginBottom: '40px', lineHeight: '1.7', maxWidth: '520px', margin: '0 auto 40px' }}>
           Create beautiful forms in minutes, generate a QR code, and start collecting responses — no clutter, no complexity.
         </p>
-        <div className="flex items-center justify-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
           <button
             onClick={() => router.push('/login')}
-            className="px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors"
+            style={{ backgroundColor: '#1A7A4A', color: 'white', border: 'none', borderRadius: '10px', padding: '14px 28px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
           >
             Start for free
           </button>
           <button
             onClick={() => router.push('/login')}
-            className="px-6 py-3 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+            style={{ background: 'none', border: 'none', fontSize: '15px', color: '#6B6B5E', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
           >
             See how it works →
           </button>
         </div>
       </div>
 
-      {/* How it works */}
-      <div className="max-w-4xl mx-auto px-6 py-20 border-t border-gray-50">
-        <p className="text-xs text-gray-400 font-medium uppercase tracking-widest text-center mb-12">
-          How it works
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Free badge */}
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px 80px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ backgroundColor: '#EEEDE7', border: '1px solid #DDDDD6', borderRadius: '12px', padding: '16px 32px', display: 'flex', alignItems: 'center', gap: '24px' }}>
           {[
-            {
-              step: '01',
-              title: 'Create your form',
-              desc: 'Answer 3 quick questions and land on the perfect starting point for your form.'
-            },
-            {
-              step: '02',
-              title: 'Share via QR or link',
-              desc: 'Get a print-ready QR code and a shareable link instantly. No setup required.'
-            },
-            {
-              step: '03',
-              title: 'Collect responses',
-              desc: 'Watch responses come in on your dashboard. Clean, simple, actionable.'
-            }
-          ].map((item) => (
-            <div key={item.step}>
-              <p className="text-xs text-gray-300 font-medium mb-3">{item.step}</p>
-              <h3 className="text-base font-medium text-gray-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Modes */}
-      <div className="max-w-4xl mx-auto px-6 py-20 border-t border-gray-50">
-        <p className="text-xs text-gray-400 font-medium uppercase tracking-widest text-center mb-4">
-          Three modes
-        </p>
-        <h3 className="text-2xl font-medium text-gray-900 text-center mb-12">
-          Pick the experience that fits
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              name: 'Quick',
-              desc: 'Minimal questions, big tap targets. Done in seconds. Perfect for receipts and table cards.',
-              tag: 'Fast'
-            },
-            {
-              name: 'Form',
-              desc: 'All questions visible, clean layout. Familiar and comfortable for surveys and info gathering.',
-              tag: 'Standard'
-            },
-            {
-              name: 'Flow',
-              desc: 'One question at a time, full screen. Focused and engaging — highest completion rates.',
-              tag: 'Immersive'
-            }
-          ].map((mode) => (
-            <div
-              key={mode.name}
-              className="bg-gray-50 rounded-2xl p-6 border border-gray-100"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-base font-medium text-gray-900">{mode.name}</h4>
-                <span className="text-xs text-gray-400 bg-white border border-gray-100 px-2 py-1 rounded-lg">
-                  {mode.tag}
-                </span>
+            { label: 'Always free', desc: 'No credit card required' },
+            { label: 'Unlimited forms', desc: 'Create as many as you need' },
+            { label: 'Instant QR codes', desc: 'Share anywhere, anytime' },
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+              {i > 0 && <div style={{ width: '1px', height: '32px', backgroundColor: '#DDDDD6' }} />}
+              <div>
+                <p style={{ fontSize: '13px', fontWeight: '600', color: '#1A7A4A', marginBottom: '2px' }}>{item.label}</p>
+                <p style={{ fontSize: '12px', color: '#A8A89E' }}>{item.desc}</p>
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed">{mode.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Coming soon */}
-      <div className="max-w-4xl mx-auto px-6 py-20 border-t border-gray-50">
-        <div className="bg-gray-50 rounded-2xl border border-gray-100 p-10 md:p-16">
-          <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-4">
-            Coming soon
+      {/* How it works */}
+      <div style={{ borderTop: '1px solid #DDDDD6', backgroundColor: '#EEEDE7' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
+          <p style={{ fontSize: '11px', color: '#A8A89E', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.12em', textAlign: 'center', marginBottom: '48px' }}>
+            How it works
           </p>
-          <h3 className="text-3xl font-medium text-gray-900 mb-4 max-w-lg">
-            The form is just the beginning.
-          </h3>
-          <p className="text-sm text-gray-400 leading-relaxed max-w-lg">
-            We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
-          </p>
-          <div className="flex items-center gap-6 mt-8">
-            {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
-              <div key={item} className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                <span className="text-xs text-gray-400">{item}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '48px' }}>
+            {[
+              { step: '01', title: 'Create your form', desc: 'Answer 3 quick questions and land on the perfect starting point for your form.' },
+              { step: '02', title: 'Share via QR or link', desc: 'Get a print-ready QR code and a shareable link instantly. No setup required.' },
+              { step: '03', title: 'Collect responses', desc: 'Watch responses come in on your dashboard. Clean, simple, actionable.' },
+            ].map((item) => (
+              <div key={item.step}>
+                <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', marginBottom: '12px', letterSpacing: '0.05em' }}>{item.step}</p>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0A0A0A', marginBottom: '8px' }}>{item.title}</h3>
+                <p style={{ fontSize: '14px', color: '#6B6B5E', lineHeight: '1.6' }}>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
+      {/* Three modes */}
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
+        <p style={{ fontSize: '11px', color: '#A8A89E', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.12em', textAlign: 'center', marginBottom: '12px' }}>
+          Three modes
+        </p>
+        <h2 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '40px', fontWeight: '400', color: '#0A0A0A', textAlign: 'center', marginBottom: '48px', letterSpacing: '-0.5px' }}>
+          Pick the experience that fits
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+          {[
+            { name: 'Quick', tag: 'Fast', desc: 'Minimal questions, big tap targets. Done in seconds. Perfect for receipts and table cards.' },
+            { name: 'Form', tag: 'Standard', desc: 'All questions visible, clean layout. Familiar and comfortable for surveys and info gathering.' },
+            { name: 'Flow', tag: 'Immersive', desc: 'One question at a time, full screen. Focused and engaging — highest completion rates.' },
+          ].map((mode) => (
+            <div key={mode.name} style={{ backgroundColor: '#EEEDE7', borderRadius: '16px', padding: '28px', border: '1px solid #DDDDD6' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#0A0A0A' }}>{mode.name}</h4>
+                <span style={{ fontSize: '11px', color: '#6B6B5E', backgroundColor: '#F5F4EF', border: '1px solid #DDDDD6', borderRadius: '6px', padding: '3px 10px' }}>{mode.tag}</span>
+              </div>
+              <p style={{ fontSize: '14px', color: '#6B6B5E', lineHeight: '1.6' }}>{mode.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Coming soon */}
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px 80px' }}>
+        <div style={{ backgroundColor: '#0A0A0A', borderRadius: '20px', padding: '64px', color: 'white' }}>
+          <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '16px' }}>
+            Coming soon
+          </p>
+          <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '40px', fontWeight: '400', color: 'white', marginBottom: '16px', letterSpacing: '-0.5px', maxWidth: '500px', lineHeight: '1.2' }}>
+            The form is just the beginning.
+          </h3>
+          <p style={{ fontSize: '15px', color: '#A8A89E', lineHeight: '1.7', maxWidth: '480px', marginBottom: '32px' }}>
+            We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
+          </p>
+          <div style={{ display: 'flex', gap: '24px' }}>
+            {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
+              <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A' }} />
+                <span style={{ fontSize: '13px', color: '#6B6B5E' }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonial */}
+      <div style={{ borderTop: '1px solid #DDDDD6', borderBottom: '1px solid #DDDDD6', backgroundColor: '#EEEDE7' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
+          <p style={{ fontFamily: 'DM Serif Display, serif', fontSize: '28px', fontWeight: '400', color: '#0A0A0A', lineHeight: '1.4', marginBottom: '24px' }}>
+            "Finally a form tool that doesn't get in the way. Set up in 2 minutes, QR code ready instantly."
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#1A7A4A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>S</span>
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: '14px', fontWeight: '600', color: '#0A0A0A' }}>Early user</p>
+              <p style={{ fontSize: '12px', color: '#A8A89E' }}>Restaurant owner, Texas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* CTA */}
-      <div className="max-w-2xl mx-auto px-6 py-24 text-center">
-        <h3 className="text-3xl font-medium text-gray-900 mb-4">
+      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '96px 24px', textAlign: 'center' }}>
+        <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '48px', fontWeight: '400', color: '#0A0A0A', marginBottom: '16px', letterSpacing: '-0.5px', lineHeight: '1.1' }}>
           Ready to get started?
         </h3>
-        <p className="text-gray-400 text-sm mb-8">
-          Create your first form in under 2 minutes. No credit card required.
+        <p style={{ fontSize: '16px', color: '#6B6B5E', marginBottom: '32px', lineHeight: '1.6' }}>
+          Create your first form in under 2 minutes. Completely free, no credit card required.
         </p>
         <button
           onClick={() => router.push('/login')}
-          className="px-8 py-3 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors"
+          style={{ backgroundColor: '#1A7A4A', color: 'white', border: 'none', borderRadius: '10px', padding: '16px 36px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
         >
           Create your first form
         </button>
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-50 px-6 py-8">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <p className="text-sm font-medium text-gray-900">Formr</p>
-          <p className="text-xs text-gray-300">Built with Next.js & Supabase</p>
+      <div style={{ borderTop: '1px solid #DDDDD6', padding: '24px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#0A0A0A' }}>Formr</span>
+          <span style={{ fontSize: '12px', color: '#A8A89E' }}>Built with Next.js & Supabase</span>
         </div>
       </div>
 
