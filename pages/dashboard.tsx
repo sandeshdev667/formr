@@ -8,6 +8,7 @@ interface Form {
   mode: string
   created_at: string
   is_active: boolean
+  response_count?: number
 }
 
 export default function Dashboard() {
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null)
   const [forms, setForms] = useState<Form[]>([])
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     const getUser = async () => {
@@ -30,18 +32,54 @@ export default function Dashboard() {
   }, [])
 
   const loadForms = async () => {
-    const { data } = await supabase
+    const { data: formsData } = await supabase
       .from('forms')
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (data) setForms(data)
+    if (!formsData) {
+      setLoading(false)
+      return
+    }
+
+    const formsWithCounts = await Promise.all(
+      formsData.map(async (form) => {
+        const { count } = await supabase
+          .from('responses')
+          .select('*', { count: 'exact', head: true })
+          .eq('form_id', form.id)
+        return { ...form, response_count: count || 0 }
+      })
+    )
+
+    setForms(formsWithCounts)
     setLoading(false)
   }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push('/login')
+  }
+
+  const toggleActive = async (form: Form) => {
+    await supabase
+      .from('forms')
+      .update({ is_active: !form.is_active })
+      .eq('id', form.id)
+
+    setForms(forms.map(f =>
+      f.id === form.id ? { ...f, is_active: !f.is_active } : f
+    ))
+  }
+
+  const deleteForm = async (formId: string) => {
+    const confirmed = window.confirm('Delete this form? This cannot be undone.')
+    if (!confirmed) return
+
+    setDeletingId(formId)
+    await supabase.from('forms').delete().eq('id', formId)
+    setForms(forms.filter(f => f.id !== formId))
+    setDeletingId(null)
   }
 
   const formatDate = (dateString: string) => {
@@ -96,7 +134,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Empty state */}
         {forms.length === 0 && (
           <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center">
             <p className="text-gray-400 text-sm">No forms yet.</p>
@@ -104,16 +141,20 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Forms grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {forms.map((form) => (
             <div
               key={form.id}
-              className="bg-white rounded-2xl border border-gray-100 p-5 hover:border-gray-300 transition-colors cursor-pointer"
-              onClick={() => router.push(`/forms/${form.id}/share`)}
+              className={`bg-white rounded-2xl border p-5 transition-colors ${
+                form.is_active ? 'border-gray-100 hover:border-gray-300' : 'border-gray-100 opacity-60'
+              }`}
             >
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-sm font-medium text-gray-900 leading-snug">
+              {/* Top row */}
+              <div className="flex items-start justify-between mb-2">
+                <h3
+                  className="text-sm font-medium text-gray-900 leading-snug cursor-pointer"
+                  onClick={() => router.push(`/forms/${form.id}/share`)}
+                >
                   {form.title}
                 </h3>
                 <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-lg ml-2 shrink-0">
@@ -121,37 +162,60 @@ export default function Dashboard() {
                 </span>
               </div>
 
-              <p className="text-xs text-gray-300">{formatDate(form.created_at)}</p>
+              {/* Meta row */}
+              <div className="flex items-center gap-3 mb-4">
+                <p className="text-xs text-gray-300">{formatDate(form.created_at)}</p>
+                <span className="text-xs text-gray-300">·</span>
+                <p className="text-xs text-gray-400">
+                  {form.response_count} {form.response_count === 1 ? 'response' : 'responses'}
+                </p>
+              </div>
 
-              <div className="flex gap-3 mt-4">
+              {/* Active/inactive badge */}
+              <div className="mb-4">
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(`/forms/${form.id}/edit`)
-                  }}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  onClick={() => toggleActive(form)}
+                  className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                    form.is_active
+                      ? 'bg-green-50 text-green-600 hover:bg-green-100'
+                      : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                  }`}
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(`/forms/${form.id}/responses`)
-                  }}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  Responses
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(`/forms/${form.id}/share`)
-                  }}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  Share
+                  {form.is_active ? 'Active' : 'Inactive'}
                 </button>
               </div>
+
+              {/* Action links */}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => router.push(`/forms/${form.id}/edit`)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => router.push(`/forms/${form.id}/responses`)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    Responses
+                  </button>
+                  <button
+                    onClick={() => router.push(`/forms/${form.id}/share`)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    Share
+                  </button>
+                </div>
+                <button
+                  onClick={() => deleteForm(form.id)}
+                  disabled={deletingId === form.id}
+                  className="text-xs text-red-300 hover:text-red-500 transition-colors disabled:opacity-50"
+                >
+                  {deletingId === form.id ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+
             </div>
           ))}
         </div>

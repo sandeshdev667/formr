@@ -14,6 +14,7 @@ interface Form {
   id: string
   title: string
   mode: string
+  is_active: boolean
 }
 
 export default function PublicForm() {
@@ -71,6 +72,15 @@ export default function PublicForm() {
   if (!form) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-gray-400 text-sm">Form not found.</p>
+    </div>
+  )
+
+  /// Addition of active/inactive status feature 
+  
+  if (!form.is_active) return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 text-center">
+      <h2 className="text-xl font-medium text-gray-900 mb-2">This form is closed</h2>
+      <p className="text-sm text-gray-400">The host is no longer accepting responses.</p>
     </div>
   )
 
