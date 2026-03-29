@@ -126,6 +126,29 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Coming soon */}
+      <div className="max-w-4xl mx-auto px-6 py-20 border-t border-gray-50">
+        <div className="bg-gray-50 rounded-2xl border border-gray-100 p-10 md:p-16">
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-4">
+            Coming soon
+          </p>
+          <h3 className="text-3xl font-medium text-gray-900 mb-4 max-w-lg">
+            The form is just the beginning.
+          </h3>
+          <p className="text-sm text-gray-400 leading-relaxed max-w-lg">
+            We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
+          </p>
+          <div className="flex items-center gap-6 mt-8">
+            {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
+              <div key={item} className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                <span className="text-xs text-gray-400">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* CTA */}
       <div className="max-w-2xl mx-auto px-6 py-24 text-center">
         <h3 className="text-3xl font-medium text-gray-900 mb-4">
