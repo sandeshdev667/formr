@@ -163,7 +163,7 @@ export default function FormResponses() {
 
           {/* Responses */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {responses.map((response, i) => (
+            {responses.map((response, i, ) => (
               <div key={response.id} className="response-card" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
 
                 {/* Response header */}

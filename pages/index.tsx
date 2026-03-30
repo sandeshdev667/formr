@@ -1,5 +1,160 @@
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useEffect, useRef } from 'react'
+import Logo from '../components/Logo'
+
+const testimonials = [
+  { quote: "Set up in 2 minutes, QR code ready instantly. Our customers love it.", name: "Marco R.", role: "Restaurant owner, Austin TX", initials: "MR", color: "#1A7A4A" },
+  { quote: "Finally replaced Google Forms. The Flow mode gets way more responses.", name: "Priya S.", role: "Event coordinator, NYC", initials: "PS", color: "#7C3AED" },
+  { quote: "We use it for every class feedback session. Students actually fill it out.", name: "James K.", role: "Professor, UT Arlington", initials: "JK", color: "#0EA5E9" },
+  { quote: "Scanned the QR at checkout and had 50 responses by end of day.", name: "Sofia M.", role: "Salon owner, Miami FL", initials: "SM", color: "#F59E0B" },
+  { quote: "Our team uses Form mode for weekly check-ins. Clean and no fluff.", name: "Daniel T.", role: "Product manager, Seattle", initials: "DT", color: "#EC4899" },
+]
+
+function TestimonialTicker() {
+  const doubled = [...testimonials, ...testimonials]
+  return (
+    <>
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .ticker-track {
+          display: flex;
+          gap: 16px;
+          animation: ticker 28s linear infinite;
+          width: max-content;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+        .testimonial-card {
+          background: #141414;
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 16px;
+          padding: 20px 24px;
+          width: 320px;
+          flex-shrink: 0;
+          transition: border-color 0.2s;
+        }
+        .testimonial-card:hover { border-color: rgba(26,122,74,0.2); }
+      `}</style>
+      <div style={{ overflow: 'hidden' }}>
+        <div className="ticker-track">
+          {doubled.map((t, i) => (
+            <div key={i} className="testimonial-card">
+              <p style={{ fontSize: '14px', color: '#A0A0A0', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic' }}>
+                "{t.quote}"
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '32px', height: '32px', borderRadius: '50%',
+                  backgroundColor: `${t.color}20`,
+                  border: `1px solid ${t.color}40`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <span style={{ fontSize: '11px', fontWeight: '600', color: t.color }}>{t.initials}</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: '500', color: 'white' }}>{t.name}</p>
+                  <p style={{ fontSize: '11px', color: '#505050' }}>{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+function AnalyticsDashboard() {
+  const [tick, setTick] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => setTick(t => t + 1), 2000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const bars = [40, 65, 45, 80, 60, 90, 75]
+  const animatedBars = bars.map((b, i) => tick > 0 ? b : 0)
+
+  return (
+    <>
+      <style>{`
+        @keyframes barGrow {
+          from { height: 0; }
+          to { height: var(--h); }
+        }
+        @keyframes countUp {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
+      <div style={{
+        background: '#0D0D0D',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '16px',
+        padding: '20px',
+        fontFamily: 'Inter, sans-serif',
+      }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <div>
+            <p style={{ fontSize: '11px', color: '#505050', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Total responses</p>
+            <p style={{ fontSize: '28px', fontWeight: '600', color: 'white', lineHeight: '1', animation: 'countUp 0.4s ease' }} key={tick}>
+              {248 + tick * 3}
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.2)', borderRadius: '20px', padding: '5px 10px' }}>
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', animation: 'pulse 2s ease-in-out infinite' }} />
+            <span style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '500' }}>Live</span>
+          </div>
+        </div>
+
+        {/* Bar chart */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '80px', marginBottom: '16px' }}>
+          {bars.map((b, i) => (
+            <div key={`${tick}-${i}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+              <div style={{
+                width: '100%',
+                height: `${b}%`,
+                backgroundColor: i === 6 ? '#1A7A4A' : 'rgba(26,122,74,0.2)',
+                borderRadius: '3px 3px 0 0',
+                transition: 'height 0.8s cubic-bezier(0.34,1.56,0.64,1)',
+                boxShadow: i === 6 ? '0 0 8px rgba(26,122,74,0.4)' : 'none',
+              }} />
+            </div>
+          ))}
+        </div>
+
+        {/* Days label */}
+        <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
+            <div key={i} style={{ flex: 1, textAlign: 'center', fontSize: '10px', color: i === 6 ? '#1A7A4A' : '#333' }}>{d}</div>
+          ))}
+        </div>
+
+        {/* Stats row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+          {[
+            { label: 'Avg rating', value: '4.8★' },
+            { label: 'Completion', value: '86%' },
+            { label: 'This week', value: `+${21 + tick}` },
+          ].map((s) => (
+            <div key={s.label} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '8px 10px' }}>
+              <p style={{ fontSize: '10px', color: '#505050', marginBottom: '3px' }}>{s.label}</p>
+              <p style={{ fontSize: '14px', fontWeight: '600', color: 'white' }} key={tick}>{s.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
 
 export default function Home() {
   const router = useRouter()
@@ -130,7 +285,7 @@ export default function Home() {
           padding: '0 32px',
         }}>
           <div style={{ maxWidth: '1100px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '17px', fontWeight: '600', color: 'white', letterSpacing: '-0.3px' }}>Formr</span>
+            <Logo />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button className="nav-link" onClick={() => router.push('/login')}>Sign in</button>
               <button className="btn-green" onClick={() => router.push('/login')} style={{ padding: '9px 18px', fontSize: '13px' }}>
@@ -241,6 +396,7 @@ export default function Home() {
         <div className="divider" />
 
         {/* Coming soon */}
+        {/* Coming soon */}
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 32px' }}>
           <div style={{
             background: 'linear-gradient(135deg, #141414 0%, #0f1a14 100%)',
@@ -249,43 +405,47 @@ export default function Home() {
             padding: '64px',
             position: 'relative',
             overflow: 'hidden',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '48px',
+            alignItems: 'center',
           }}>
+            {/* Background orb */}
             <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.12) 0%, transparent 65%)', pointerEvents: 'none' }} />
-            <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '16px', position: 'relative', zIndex: 1 }}>Coming soon</p>
-            <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '44px', fontWeight: '400', color: 'white', marginBottom: '16px', letterSpacing: '-0.5px', maxWidth: '500px', lineHeight: '1.15', position: 'relative', zIndex: 1 }}>
-              The form is just the beginning.
-            </h3>
-            <p style={{ fontSize: '15px', color: '#505050', lineHeight: '1.7', maxWidth: '480px', marginBottom: '32px', position: 'relative', zIndex: 1 }}>
-              We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
-            </p>
-            <div style={{ display: 'flex', gap: '24px', position: 'relative', zIndex: 1 }}>
-              {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
-                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A' }} />
-                  <span style={{ fontSize: '13px', color: '#505050' }}>{item}</span>
-                </div>
-              ))}
+
+            {/* Left — text */}
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '16px' }}>Coming soon</p>
+              <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '40px', fontWeight: '400', color: 'white', marginBottom: '16px', letterSpacing: '-0.5px', lineHeight: '1.15' }}>
+                The form is just the beginning.
+              </h3>
+              <p style={{ fontSize: '15px', color: '#505050', lineHeight: '1.7', marginBottom: '28px' }}>
+                We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
+                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', flexShrink: 0 }} />
+                    <span style={{ fontSize: '13px', color: '#505050' }}>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
+
+    {/* Right — animated dashboard card */}
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <AnalyticsDashboard />
+    </div>
+  </div>
+</div>
+        
 
         <div className="divider" />
 
-        {/* Testimonial */}
-        <div style={{ maxWidth: '700px', margin: '0 auto', padding: '80px 32px', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'DM Serif Display, serif', fontSize: '28px', fontWeight: '400', color: 'white', lineHeight: '1.5', marginBottom: '28px', fontStyle: 'italic' }}>
-            "Finally a form tool that doesn't get in the way. Set up in 2 minutes, QR code ready instantly."
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(26,122,74,0.2)', border: '1px solid rgba(26,122,74,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: '14px', fontWeight: '600', color: '#1A7A4A' }}>S</span>
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: '14px', fontWeight: '500', color: 'white' }}>Early user</p>
-              <p style={{ fontSize: '12px', color: '#505050' }}>Restaurant owner, Texas</p>
-            </div>
-          </div>
-        </div>
+        {/* Testimonials ticker */}
+<div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', padding: '48px 0' }}>
+  <TestimonialTicker />
+</div>
 
         <div className="divider" />
 
