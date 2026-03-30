@@ -9,12 +9,24 @@ export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
 
   const handleAuth = async () => {
     setLoading(true)
     setError('')
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: 'http://localhost:3000/auth/callback',
+      data: {
+        full_name: name,
+        phone: phone,
+      }
+    }
+  })
       if (error) setError(error.message)
       else setError('Check your email to confirm your account.')
     } else {
@@ -24,6 +36,7 @@ export default function Login() {
     }
     setLoading(false)
   }
+
 
   return (
     <>
@@ -306,23 +319,45 @@ export default function Login() {
           </div>
 
           <div className="fade-up d3" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '12px' }}>
-            <input
-              className="glass-input"
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
-            />
-            <input
-              className="glass-input"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
-            />
-          </div>
+  {isSignUp && (
+    <>
+      <input
+        className="glass-input"
+        type="text"
+        placeholder="Full name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #DDDDD6', color: '#0A0A0A' }}
+      />
+      <input
+        className="glass-input"
+        type="tel"
+        placeholder="Phone number (optional)"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #DDDDD6', color: '#0A0A0A' }}
+      />
+    </>
+  )}
+  <input
+    className="glass-input"
+    type="email"
+    placeholder="Email address"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+    style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #DDDDD6', color: '#0A0A0A' }}
+  />
+  <input
+    className="glass-input"
+    type="password"
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+    style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid #DDDDD6', color: '#0A0A0A' }}
+  />
+</div>
 
           {error && (
             <div style={{
