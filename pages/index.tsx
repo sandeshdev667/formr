@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { supabase } from '../lib/supabase'
 import Logo from '../components/Logo'
 
 const testimonials = [
@@ -158,6 +159,13 @@ function AnalyticsDashboard() {
 
 export default function Home() {
   const router = useRouter()
+  useEffect(() => {
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) router.push('/dashboard')
+  }
+  checkSession()
+}, [])
 
   return (
     <>

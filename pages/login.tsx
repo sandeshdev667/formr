@@ -13,6 +13,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  //for login page to dashboard handing if loggedin
+  useEffect(() => {
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) router.push('/dashboard')
+  }
+  checkSession()
+}, [])
 
   useEffect(() => {
     const canvas = canvasRef.current

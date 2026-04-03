@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
+import Logo from '../components/Logo'
+
 
 interface Form {
   id: string
@@ -17,6 +19,7 @@ interface RecentResponse {
   created_at: string
   form_id: string
   form_title: string
+  answers: Record<string, any>
 }
 
 function AnimatedCount({ value, duration = 1000 }: { value: number, duration?: number }) {
@@ -32,6 +35,18 @@ function AnimatedCount({ value, duration = 1000 }: { value: number, duration?: n
     requestAnimationFrame(animate)
   }, [value])
   return <>{display}</>
+}
+
+function TypewriterName({ name }: { name: string }) {
+  return (
+    <span style={{
+      fontFamily: 'DM Serif Display, serif',
+      fontStyle: 'italic',
+      color: 'white',
+    }}>
+      {name}
+    </span>
+  )
 }
 
 function getGreeting() {
@@ -51,10 +66,19 @@ function timeAgo(dateString: string) {
   return `${Math.floor(hrs / 24)}d ago`
 }
 
+function getAnswerPreview(answers: Record<string, any>): string {
+  const values = Object.values(answers)
+  if (values.length === 0) return 'No answers'
+  const first = values[0]
+  if (typeof first === 'string') return first.length > 40 ? first.slice(0, 40) + '...' : first
+  if (typeof first === 'number') return `Rating: ${first}/5`
+  return String(first)
+}
+
 const modeColors: Record<string, { text: string, bg: string, border: string }> = {
   quick: { text: '#1A7A4A', bg: 'rgba(26,122,74,0.1)', border: 'rgba(26,122,74,0.25)' },
-  form: { text: '#A0A0A0', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.08)' },
-  flow: { text: '#ffffff', bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.12)' },
+  form: { text: '#2563EB', bg: 'rgba(37,99,235,0.1)', border: 'rgba(37,99,235,0.25)' },
+  flow: { text: '#7C3AED', bg: 'rgba(124,58,237,0.1)', border: 'rgba(124,58,237,0.25)' },
 }
 
 export default function Dashboard() {
@@ -68,6 +92,7 @@ export default function Dashboard() {
   const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set())
 
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there'
+  const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
   const totalResponses = forms.reduce((a, f) => a + (f.response_count || 0), 0)
 
   useEffect(() => {
@@ -105,7 +130,7 @@ export default function Dashboard() {
     setForms(formsWithDetails)
 
     const { data: allResponses } = await supabase
-      .from('responses').select('id, created_at, form_id').order('created_at', { ascending: false }).limit(8)
+      .from('responses').select('id, created_at, form_id, answers').order('created_at', { ascending: false }).limit(8)
 
     if (allResponses) {
       setRecentResponses(allResponses.map(r => ({
@@ -136,6 +161,8 @@ export default function Dashboard() {
     setDeletingId(null)
   }
 
+  const totalResponses2 = forms.reduce((a, f) => a + (f.response_count || 0), 0)
+
   if (loading) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif' }}>
       <div style={{ textAlign: 'center' }}>
@@ -149,22 +176,17 @@ export default function Dashboard() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #0D0D0D; color: white; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(0.8); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
         }
 
         .form-card {
@@ -176,9 +198,7 @@ export default function Dashboard() {
           opacity: 0;
           transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.2s;
         }
-        .form-card.visible {
-          animation: fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
-        }
+        .form-card.visible { animation: fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
         .form-card.inactive { opacity: 0.35; filter: grayscale(0.5); }
         .form-card:hover {
           transform: translateY(-4px) scale(1.01);
@@ -196,88 +216,58 @@ export default function Dashboard() {
         }
 
         .pill-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          border: none;
-          border-radius: 20px;
-          padding: 6px 12px;
-          font-size: 12px;
-          font-weight: 500;
-          cursor: pointer;
+          display: inline-flex; align-items: center; gap: 5px;
+          border: none; border-radius: 20px; padding: 6px 12px;
+          font-size: 12px; font-weight: 500; cursor: pointer;
           font-family: 'Inter', sans-serif;
           transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
         }
         .pill-btn:hover { transform: translateY(-1px) scale(1.04); }
 
         .toggle-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          border: none;
-          border-radius: 20px;
-          padding: 4px 10px;
-          font-size: 11px;
-          font-weight: 500;
-          cursor: pointer;
+          display: inline-flex; align-items: center; gap: 6px;
+          border: none; border-radius: 20px; padding: 4px 10px;
+          font-size: 11px; font-weight: 500; cursor: pointer;
           font-family: 'Inter', sans-serif;
           transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
         }
 
         .activity-item {
-          padding: 12px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.04);
+          padding: 12px;
+          border-radius: 10px;
           opacity: 0;
           animation: slideIn 0.4s ease forwards;
           cursor: pointer;
           transition: background 0.15s;
-          border-radius: 8px;
-          margin: 0 -8px;
-          padding: 10px 8px;
+          margin-bottom: 4px;
         }
-        .activity-item:last-child { border-bottom: none; }
         .activity-item:hover { background: rgba(255,255,255,0.03); }
 
         .create-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          background: #1A7A4A;
-          color: white;
-          border: none;
-          border-radius: 10px;
-          padding: 10px 18px;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
+          display: inline-flex; align-items: center; gap: 6px;
+          background: #1A7A4A; color: white; border: none;
+          border-radius: 10px; padding: 10px 18px;
+          font-size: 13px; font-weight: 500; cursor: pointer;
           font-family: 'Inter', sans-serif;
           transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
           box-shadow: 0 0 0 0 rgba(26,122,74,0);
         }
         .create-btn:hover {
-          background: #155C38;
-          transform: translateY(-2px);
+          background: #155C38; transform: translateY(-2px);
           box-shadow: 0 0 20px rgba(26,122,74,0.35);
         }
 
         .signout-btn {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 8px;
-          padding: 7px 14px;
-          font-size: 13px;
-          color: #505050;
-          cursor: pointer;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 8px; padding: 7px 16px;
+          font-size: 13px; color: white; cursor: pointer;
           font-family: 'Inter', sans-serif;
           transition: all 0.2s;
         }
-        .signout-btn:hover { border-color: rgba(255,255,255,0.15); color: white; }
-
-        .grid-bg {
-          background-image:
-            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-          background-size: 40px 40px;
+        .signout-btn:hover {
+          border-color: rgba(255,255,255,0.5);
+          background: rgba(255,255,255,0.06);
         }
       `}</style>
 
@@ -293,9 +283,12 @@ export default function Dashboard() {
           padding: '0 32px',
         }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '17px', fontWeight: '600', color: 'white', letterSpacing: '-0.3px' }}>Formr</span>
+            <Logo />
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span style={{ fontSize: '13px', color: '#505050' }}>{user?.email}</span>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: '13px', fontWeight: '500', color: 'white' }}>{fullName}</p>
+                <p style={{ fontSize: '11px', color: '#505050' }}>{user?.email}</p>
+              </div>
               <button className="signout-btn" onClick={handleSignOut}>Sign out</button>
             </div>
           </div>
@@ -306,7 +299,7 @@ export default function Dashboard() {
           {/* Greeting */}
           <div style={{ marginBottom: '32px', opacity: 0, animation: 'fadeUp 0.5s ease 0.05s forwards' }}>
             <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '36px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px', marginBottom: '4px' }}>
-              {getGreeting()}, {firstName} 👋
+                {getGreeting()}, <TypewriterName name={firstName} />
             </h1>
             <p style={{ fontSize: '14px', color: '#505050' }}>
               {forms.length === 0
@@ -333,14 +326,13 @@ export default function Dashboard() {
           </div>
 
           {/* Main layout */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '24px', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
 
             {/* Left — Forms */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', opacity: 0, animation: 'fadeUp 0.4s ease 0.2s forwards' }}>
                 <h2 style={{ fontSize: '14px', fontWeight: '500', color: '#A0A0A0' }}>
-                  Your forms
-                  <span style={{ marginLeft: '8px', color: '#505050' }}>{forms.length}</span>
+                  Your forms <span style={{ color: '#505050' }}>{forms.length}</span>
                 </h2>
                 <button className="create-btn" onClick={() => router.push('/forms/new')}>
                   + Create form
@@ -366,9 +358,11 @@ export default function Dashboard() {
                   const mc = modeColors[form.mode] || modeColors.form
                   return (
                     <div
-                      key={form.id}
                       className={`form-card ${visibleCards.has(i) ? 'visible' : ''} ${!form.is_active ? 'inactive' : ''}`}
-                      style={{ animationDelay: `${0.1 + i * 0.07}s` }}
+                        style={{
+                        animationDelay: `${0.1 + i * 0.07}s`,
+                        borderLeft: `3px solid ${form.mode === 'quick' ? '#1A7A4A' : form.mode === 'flow' ? '#7C3AED' : '#2563EB'}`,
+                        }}
                     >
                       {/* Card header */}
                       <div style={{
@@ -389,12 +383,12 @@ export default function Dashboard() {
                             border: `1px solid ${mc.border}`,
                             borderRadius: '6px', padding: '2px 8px',
                             textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
-                          }}>
+                            display: 'inline-flex', alignItems: 'center', gap: '4px',
+                            }}>
+                            {form.mode === 'quick' ? '⚡' : form.mode === 'flow' ? '→' : '☰'}
                             {form.mode}
-                          </span>
+                        </span>
                         </div>
-
-                        {/* Stats row */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                             <span style={{ fontSize: '20px', fontWeight: '600', color: 'white', lineHeight: '1' }}>
@@ -413,8 +407,6 @@ export default function Dashboard() {
 
                       {/* Card body */}
                       <div style={{ padding: '14px 18px' }}>
-
-                        {/* Completion rate */}
                         <div style={{ marginBottom: '14px' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
                             <span style={{ fontSize: '11px', color: '#505050' }}>Completion rate</span>
@@ -425,7 +417,6 @@ export default function Dashboard() {
                           </div>
                         </div>
 
-                        {/* Toggle */}
                         <div style={{ marginBottom: '14px' }} onClick={(e) => e.stopPropagation()}>
                           <button
                             className="toggle-pill"
@@ -446,7 +437,6 @@ export default function Dashboard() {
                           </button>
                         </div>
 
-                        {/* Action buttons */}
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }} onClick={(e) => e.stopPropagation()}>
                           <button className="pill-btn" onClick={() => router.push(`/forms/${form.id}/edit`)}
                             style={{ backgroundColor: 'rgba(255,255,255,0.06)', color: 'white', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -464,7 +454,7 @@ export default function Dashboard() {
                             Responses
                           </button>
                           <button className="pill-btn" onClick={() => deleteForm(form.id)} disabled={deletingId === form.id}
-                            style={{ backgroundColor: 'transparent', color: '#3a1a1a', border: '1px solid rgba(220,38,38,0.15)', marginLeft: 'auto' }}>
+                            style={{ backgroundColor: 'transparent', color: '#3a1212', border: '1px solid rgba(220,38,38,0.15)', marginLeft: 'auto' }}>
                             {deletingId === form.id ? '...' : '✕'}
                           </button>
                         </div>
@@ -478,34 +468,84 @@ export default function Dashboard() {
             {/* Right — Activity panel */}
             <div style={{ position: 'sticky', top: '80px', opacity: 0, animation: 'slideIn 0.5s ease 0.3s forwards' }}>
               <div style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '18px', overflow: 'hidden' }}>
-                <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', boxShadow: '0 0 8px rgba(26,122,74,0.8)', animation: 'pulse 2s ease-in-out infinite' }} />
-                  <h3 style={{ fontSize: '13px', fontWeight: '500', color: 'white' }}>Recent activity</h3>
+
+                {/* Panel header */}
+                <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#1A7A4A', boxShadow: '0 0 8px rgba(26,122,74,0.8)', animation: 'pulse 2s ease-in-out infinite' }} />
+                      <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'white' }}>Recent activity</h3>
+                    </div>
+                    <span style={{ fontSize: '11px', color: '#505050' }}>{recentResponses.length} responses</span>
+                  </div>
+                  <p style={{ fontSize: '11px', color: '#505050', paddingLeft: '15px' }}>Latest submissions across all forms</p>
                 </div>
-                <div style={{ padding: '8px 12px 16px' }}>
+
+                {/* Activity items */}
+                <div style={{ padding: '8px 12px 12px' }}>
                   {recentResponses.length === 0 ? (
-                    <div style={{ padding: '32px 0', textAlign: 'center' }}>
-                      <p style={{ fontSize: '13px', color: '#505050' }}>No responses yet.</p>
-                      <p style={{ fontSize: '11px', color: '#333', marginTop: '4px' }}>Share a form to get started.</p>
+                    <div style={{ padding: '40px 0', textAlign: 'center' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M2 4h12M2 8h7M2 12h4" stroke="#333" strokeWidth="1.2" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+                      <p style={{ fontSize: '13px', color: '#505050', marginBottom: '4px' }}>No responses yet</p>
+                      <p style={{ fontSize: '11px', color: '#333' }}>Share a form to get started</p>
                     </div>
                   ) : (
                     recentResponses.map((r, i) => (
-                      <div key={r.id} className="activity-item" style={{ animationDelay: `${0.35 + i * 0.04}s` }}
-                        onClick={() => router.push(`/forms/${r.form_id}/responses`)}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(26,122,74,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M2 6h5M2 9h3" stroke="#1A7A4A" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                      <div
+                        key={r.id}
+                        className="activity-item"
+                        style={{ animationDelay: `${0.35 + i * 0.04}s` }}
+                        onClick={() => router.push(`/forms/${r.form_id}/responses`)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                          {/* Icon */}
+                          <div style={{
+                            width: '32px', height: '32px', borderRadius: '8px',
+                            backgroundColor: 'rgba(26,122,74,0.1)',
+                            border: '1px solid rgba(26,122,74,0.15)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0, marginTop: '1px',
+                          }}>
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                              <path d="M2 3h9M2 6.5h6M2 10h4" stroke="#1A7A4A" strokeWidth="1.2" strokeLinecap="round"/>
+                            </svg>
                           </div>
+
+                          {/* Content */}
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontSize: '12px', fontWeight: '500', color: 'white', marginBottom: '1px' }}>New response</p>
-                            <p style={{ fontSize: '11px', color: '#505050', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.form_title}</p>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                              <p style={{ fontSize: '12px', fontWeight: '500', color: 'white', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px' }}>
+                                {r.form_title}
+                              </p>
+                              <span style={{ fontSize: '10px', color: '#505050', flexShrink: 0, marginLeft: '6px' }}>
+                                {timeAgo(r.created_at)}
+                              </span>
+                            </div>
+                            <p style={{ fontSize: '11px', color: '#505050', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {getAnswerPreview(r.answers)}
+                            </p>
                           </div>
-                          <span style={{ fontSize: '10px', color: '#333', flexShrink: 0 }}>{timeAgo(r.created_at)}</span>
                         </div>
                       </div>
                     ))
                   )}
                 </div>
+
+                {/* Footer */}
+                {recentResponses.length > 0 && (
+                  <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                    <button
+                      onClick={() => router.push('/dashboard')}
+                      style={{ background: 'none', border: 'none', color: '#505050', fontSize: '12px', cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', gap: '4px', transition: 'color 0.2s' }}
+                    >
+                      View all activity →
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
