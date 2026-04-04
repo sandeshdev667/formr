@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../components/Logo'
 import Head from 'next/head'
-import Loader from '../components/Loader'
+
 
 
 interface Form {
@@ -102,7 +102,7 @@ export default function Dashboard() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) { router.push('/login'); return }
       setUser(session.user)
-      loadData()
+      loadData(session.user.id)
     }
     getUser()
   }, [])
@@ -115,11 +115,10 @@ export default function Dashboard() {
     }
   }, [forms])
 
-  const loadData = async () => {
-    const { data: formsData } = await supabase
-      .from('forms').select('*').order('created_at', { ascending: false })
+const loadData = async (userId: string) => {
+  const { data: formsData } = await supabase
+    .from('forms').select('*').eq('owner_id', userId).order('created_at', { ascending: false })
     if (!formsData) { setLoading(false); return }
-
     const formsWithDetails = await Promise.all(
       formsData.map(async (form) => {
         const [{ count }, { data: lastResp }] = await Promise.all([
@@ -165,7 +164,15 @@ export default function Dashboard() {
 
   const totalResponses2 = forms.reduce((a, f) => a + (f.response_count || 0), 0)
 
-if (loading) return <Loader label="Loading your dashboard" />
+  if (loading) return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite', margin: '0 auto 12px' }} />
+        <p style={{ fontSize: '13px', color: '#505050' }}>Loading...</p>
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
 
   return (
     <>
