@@ -10,9 +10,13 @@ Create forms, share them instantly via QR code, and collect responses — all fr
 
 ## Preview
 
+   ### Landing Page
    ![Landing Page](screenshots/landing.png)
+   ### Dashboard
    ![Dashboard](screenshots/dashboard.png)
+   ###  Form Builder
    ![Form Builder](screenshots/builder.png)
+   ### QR Share Page
    ![QR Share Page](screenshots/share.png)
 
 ---
