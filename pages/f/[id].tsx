@@ -38,6 +38,10 @@ export default function PublicForm() {
     const { data: questionsData } = await supabase.from('questions').select('*').eq('form_id', id).order('order_index')
     if (formData) setForm(formData)
     if (questionsData) setQuestions(questionsData)
+    // Increment view count
+    if (id) {
+      await supabase.rpc('increment_views', { form_id: id })
+    }
     setLoading(false)
   }
 
