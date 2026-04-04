@@ -130,8 +130,13 @@ const loadData = async (userId: string) => {
     )
     setForms(formsWithDetails)
 
-    const { data: allResponses } = await supabase
-      .from('responses').select('id, created_at, form_id, answers').order('created_at', { ascending: false }).limit(8)
+    const formIds = formsData.map(f => f.id)
+const { data: allResponses } = await supabase
+  .from('responses')
+  .select('id, created_at, form_id, answers')
+  .in('form_id', formIds)
+  .order('created_at', { ascending: false })
+  .limit(8)
 
     if (allResponses) {
       setRecentResponses(allResponses.map(r => ({
