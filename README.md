@@ -10,11 +10,10 @@ Create forms, share them instantly via QR code, and collect responses — all fr
 
 ## Preview
 
-> _Screenshots coming soon_
-
-<!-- Add screenshots of your landing page, dashboard, form builder, and QR share page here -->
-<!-- ![Landing Page](screenshots/landing.png) -->
-<!-- ![Dashboard](screenshots/dashboard.png) -->
+   ![Landing Page](screenshots/landing.png)
+   ![Dashboard](screenshots/dashboard.png)
+   ![Form Builder](screenshots/builder.png)
+   ![QR Share Page](screenshots/share.png)
 
 ---
 
