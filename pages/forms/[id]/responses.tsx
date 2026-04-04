@@ -3,6 +3,7 @@ import { supabase } from '../../../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../../../components/Logo'
 import Head from 'next/head'
+import Loader from '../../../components/Loader'
 
 interface Question {
   id: string
@@ -109,12 +110,7 @@ export default function FormResponses() {
     return (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)
   }
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
+  if (loading) return <Loader label="Loading responses" />
 
   const completionRate = (() => {
   console.log('views:', form?.views, 'responses:', responses.length)

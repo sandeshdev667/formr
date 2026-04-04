@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { QRCodeSVG } from 'qrcode.react'
 import Logo from '../../../components/Logo'
 import Head from 'next/head'
+import Loader from '../../../components/Loader'
 
 export default function ShareForm() {
   const router = useRouter()
@@ -104,12 +105,7 @@ export default function ShareForm() {
     printWindow.document.close()
   }
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
+  if (loading) return <Loader label="Loading share page" />
 
   const mc = modeConfig[form?.mode] || modeConfig.form
 

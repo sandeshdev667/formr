@@ -3,6 +3,8 @@ import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../../components/Logo'
 import Head from 'next/head'
+import Loader from '../../components/Loader'
+
 const purposes = [
   {
     key: 'feedback',
@@ -169,15 +171,7 @@ export default function NewForm() {
     router.push(`/forms/${form.id}/edit`)
   }
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite', margin: '0 auto 12px' }} />
-        <p style={{ fontSize: '13px', color: '#505050' }}>Setting up your form...</p>
-      </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
+  if (loading) return <Loader label="Setting up your form" />
 
   return (
     <>

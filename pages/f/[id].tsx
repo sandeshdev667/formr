@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import Loader from '../../components/Loader'
 
 interface Question {
   id: string
@@ -60,17 +61,7 @@ export default function PublicForm() {
   const answeredCount = Object.keys(answers).length
   const progress = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0
 
-  if (loading) return (
-    <>
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        body { background: #0D0D0D; margin: 0; }
-      `}</style>
-      <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-      </div>
-    </>
-  )
+ if (loading) return <Loader label="Getting your form ready" />
 
   if (!form) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', textAlign: 'center', padding: '24px' }}>

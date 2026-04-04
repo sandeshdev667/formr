@@ -3,6 +3,7 @@ import { supabase } from '../../../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../../../components/Logo'
 import Head from 'next/head'
+import Loader from '../../../components/Loader'
 
 type QuestionType = 'text' | 'rating' | 'yes_no' | 'multiple_choice'
 
@@ -137,12 +138,7 @@ export default function EditForm() {
 
   const config = modeConfig[mode] || modeConfig.form
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '28px', height: '28px', border: '2px solid #1a1a1a', borderTopColor: '#1A7A4A', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
+  if (loading) return <Loader label="Loading your form" />
 
   return (
     <>
