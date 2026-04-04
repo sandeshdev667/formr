@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../components/Logo'
+import Head from 'next/head'
 
 export default function Login() {
   const router = useRouter()
@@ -113,7 +114,7 @@ export default function Login() {
       const { error } = await supabase.auth.signUp({
         email, password,
         options: {
-          emailRedirectTo: 'http://localhost:3000/auth/callback',
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback`,
           data: { full_name: name, phone }
         }
       })
@@ -130,12 +131,15 @@ export default function Login() {
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'http://localhost:3000/auth/callback' }
+      options: { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback` }
     })
   }
 
   return (
     <>
+      <Head>
+        <title>Formr — Login</title>
+      </Head>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

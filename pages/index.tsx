@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 import Logo from '../components/Logo'
+import Head from 'next/head'
 
 const testimonials = [
   { quote: "Set up in 2 minutes, QR code ready instantly. Our customers love it.", name: "Marco R.", role: "Restaurant owner, Austin TX", initials: "MR", color: "#1A7A4A" },
@@ -15,6 +16,9 @@ function TestimonialTicker() {
   const doubled = [...testimonials, ...testimonials]
   return (
     <>
+    <Head>
+        <title>Formr — Simple forms, real responses</title>
+    </Head>
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }

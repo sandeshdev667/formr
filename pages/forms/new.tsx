@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/router'
 import Logo from '../../components/Logo'
-
+import Head from 'next/head'
 const purposes = [
   {
     key: 'feedback',
@@ -181,6 +181,9 @@ export default function NewForm() {
 
   return (
     <>
+    <Head>
+  <title>New form — Formr</title>
+</Head>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

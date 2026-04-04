@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 interface Question {
   id: string
@@ -99,6 +100,9 @@ export default function PublicForm() {
   // Thank you screen
   if (submitted) return (
     <>
+      <Head>
+  <title>{form?.title || 'Form'} — Formr</title>
+</Head>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
