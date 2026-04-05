@@ -14,14 +14,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  //for login page to dashboard handing if loggedin
+
   useEffect(() => {
-  const checkSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) router.push('/dashboard')
-  }
-  checkSession()
-}, [])
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) router.push('/dashboard')
+    }
+    checkSession()
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -143,7 +143,7 @@ export default function Login() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0D0D0D; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+        body { background: #0D0D0D; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(20px); }
@@ -160,6 +160,16 @@ export default function Login() {
         .s4 { opacity:0; animation: fadeSlideUp 0.5s ease 0.4s forwards; }
         .s5 { opacity:0; animation: fadeSlideUp 0.5s ease 0.5s forwards; }
 
+        .login-wrapper {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          position: relative;
+          z-index: 2;
+        }
+
         .island {
           background: #161616;
           border: 1px solid rgba(255,255,255,0.08);
@@ -171,6 +181,15 @@ export default function Login() {
           animation: islandIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
           position: relative;
           z-index: 10;
+        }
+
+        .login-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 28px;
+          font-weight: 400;
+          color: white;
+          margin-bottom: 6px;
+          letter-spacing: -0.3px;
         }
 
         .google-btn {
@@ -260,12 +279,35 @@ export default function Login() {
         }
         .toggle-btn:hover { opacity: 0.8; }
 
-        .graph-line {
-          animation: drawLine 2s ease forwards;
+        .trust-bar {
+          margin-top: 24px;
+          padding-top: 20px;
+          border-top: 1px solid rgba(255,255,255,0.04);
+          display: flex;
+          justify-content: center;
+          gap: 16px;
         }
-        @keyframes drawLine {
-          from { stroke-dashoffset: 300; }
-          to { stroke-dashoffset: 0; }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 480px) {
+          .login-wrapper {
+            padding: 16px;
+            align-items: flex-start;
+            padding-top: 60px;
+          }
+
+          .island {
+            padding: 28px 22px;
+            border-radius: 20px;
+          }
+
+          .login-heading {
+            font-size: 24px;
+          }
+
+          .trust-bar {
+            gap: 10px;
+          }
         }
       `}</style>
 
@@ -279,7 +321,7 @@ export default function Login() {
       <div style={{ position: 'fixed', top: '15%', left: '10%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.08) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 1 }} />
       <div style={{ position: 'fixed', bottom: '10%', right: '8%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.05) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 1 }} />
 
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', zIndex: 2 }}>
+      <div className="login-wrapper">
 
         <div className="island">
 
@@ -290,7 +332,7 @@ export default function Login() {
 
           {/* Heading */}
           <div className="s2" style={{ marginBottom: '24px' }}>
-            <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '28px', fontWeight: '400', color: 'white', marginBottom: '6px', letterSpacing: '-0.3px' }}>
+            <h1 className="login-heading">
               {isSignUp ? 'Create account' : 'Welcome back'}
             </h1>
             <p style={{ fontSize: '13px', color: '#505050' }}>
@@ -355,7 +397,7 @@ export default function Login() {
           </div>
 
           {/* Trust bar */}
-          <div className="s5" style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'center', gap: '16px' }}>
+          <div className="s5 trust-bar">
             {['No credit card', 'Free forever', 'Instant QR'].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#1A7A4A' }} />

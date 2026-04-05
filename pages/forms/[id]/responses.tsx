@@ -64,7 +64,6 @@ export default function FormResponses() {
     a.click()
   }
 
-  // Analytics helpers
   const getAverageRating = (questionId: string) => {
     const vals = responses.map(r => r.answers[questionId]).filter(v => typeof v === 'number')
     if (vals.length === 0) return null
@@ -113,16 +112,16 @@ export default function FormResponses() {
   if (loading) return <Loader label="Loading responses" />
 
   const completionRate = (() => {
-  console.log('views:', form?.views, 'responses:', responses.length)
-  if (!form || !form.views || form.views === 0) return 0
-  return Math.min(Math.round((responses.length / form.views) * 100), 100)
-})()
-const overallAvg = avgRatingOverall()
+    if (!form || !form.views || form.views === 0) return 0
+    return Math.min(Math.round((responses.length / form.views) * 100), 100)
+  })()
+  const overallAvg = avgRatingOverall()
+
   return (
     <>
     <Head>
-  <title>Responses — Formr</title>
-</Head>
+      <title>Responses — Formr</title>
+    </Head>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -130,7 +129,6 @@ const overallAvg = avgRatingOverall()
 
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes growBar { from { width: 0; } to { width: var(--w); } }
 
         .back-btn {
           background: none; border: none; color: #505050; font-size: 13px;
@@ -205,6 +203,133 @@ const overallAvg = avgRatingOverall()
         }
 
         .divider { height: 1px; background: rgba(255,255,255,0.05); }
+
+        /* Layout classes */
+        .resp-nav-inner {
+          max-width: 1000px;
+          margin: 0 auto;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .resp-nav-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .resp-nav-separator {
+          color: rgba(255,255,255,0.15);
+          font-size: 16px;
+        }
+
+        .resp-nav-right {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .resp-nav-dashboard {
+          display: block;
+        }
+
+        .resp-content {
+          max-width: 1000px;
+          margin: 0 auto;
+          padding: 40px 32px;
+        }
+
+        .resp-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 32px;
+          font-weight: 400;
+          color: white;
+          letter-spacing: -0.5px;
+          margin-bottom: 6px;
+        }
+
+        .resp-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 12px;
+          margin-bottom: 32px;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .resp-nav-inner {
+            padding: 0 4px;
+          }
+
+          .resp-nav-separator,
+          .resp-nav-share-btn {
+            display: none;
+          }
+
+          .resp-nav-left {
+            gap: 8px;
+          }
+
+          .resp-nav-dashboard {
+            display: none;
+          }
+
+          .resp-content {
+            padding: 24px 16px;
+          }
+
+          .resp-heading {
+            font-size: 24px;
+          }
+
+          .resp-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+          }
+
+          .stat-card {
+            padding: 14px 16px;
+          }
+
+          .stat-card p:last-child {
+            font-size: 22px !important;
+          }
+
+          .analytics-card {
+            padding: 18px;
+          }
+
+          .response-card {
+            padding: 16px;
+          }
+
+          .export-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+          }
+
+          .tab-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .resp-content {
+            padding: 20px 12px;
+          }
+
+          .resp-heading {
+            font-size: 20px;
+          }
+
+          .stat-card p:last-child {
+            font-size: 18px !important;
+          }
+        }
       `}</style>
 
       <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D' }}>
@@ -218,34 +343,34 @@ const overallAvg = avgRatingOverall()
           WebkitBackdropFilter: 'blur(12px)',
           padding: '0 32px',
         }}>
-          <div style={{ maxWidth: '1000px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="resp-nav-inner">
+            <div className="resp-nav-left">
               <Logo onClick={() => router.push('/dashboard')} />
-              <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>/</span>
-              <button className="back-btn" style={{ padding: '4px 8px' }} onClick={() => router.push(`/forms/${id}/share`)}>
+              <span className="resp-nav-separator">/</span>
+              <button className="back-btn resp-nav-share-btn" style={{ padding: '4px 8px' }} onClick={() => router.push(`/forms/${id}/share`)}>
                 ← Share page
               </button>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="resp-nav-right">
               <button className="export-btn" onClick={exportCSV}>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path d="M6 1v7M3 5l3 3 3-3M1 9v1a1 1 0 001 1h8a1 1 0 001-1V9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 Export CSV
               </button>
-              <button className="back-btn" onClick={() => router.push('/dashboard')}>Dashboard</button>
+              <button className="back-btn resp-nav-dashboard" onClick={() => router.push('/dashboard')}>Dashboard</button>
             </div>
           </div>
         </nav>
 
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 32px' }}>
+        <div className="resp-content">
 
           {/* Header */}
           <div style={{ marginBottom: '32px', opacity: 0, animation: 'fadeUp 0.4s ease 0.05s forwards' }}>
-            <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '32px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px', marginBottom: '6px' }}>
+            <h1 className="resp-heading">
               {form?.title}
             </h1>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '14px', color: '#505050' }}>
                 {responses.length} {responses.length === 1 ? 'response' : 'responses'}
               </span>
@@ -261,7 +386,7 @@ const overallAvg = avgRatingOverall()
           </div>
 
           {/* Summary stats row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '32px' }}>
+          <div className="resp-stats-grid">
             {[
               { label: 'Total responses', value: responses.length, delay: '0.1s' },
               { label: 'Avg rating', value: overallAvg ? `${overallAvg} / 5` : '—', delay: '0.15s', accent: !!overallAvg },
@@ -309,12 +434,12 @@ const overallAvg = avgRatingOverall()
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {questions.map((q, qi) => (
                 <div className="analytics-card" key={q.id} style={{ animationDelay: `${qi * 0.06}s` }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px', gap: '12px', flexWrap: 'wrap' }}>
                     <div>
                       <p style={{ fontSize: '11px', color: '#505050', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>Q{qi + 1}</p>
                       <p style={{ fontSize: '15px', fontWeight: '500', color: 'white' }}>{q.label}</p>
                     </div>
-                    <span style={{ fontSize: '10px', fontWeight: '600', color: '#1A7A4A', backgroundColor: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.2)', borderRadius: '6px', padding: '2px 8px', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0, marginLeft: '12px' }}>
+                    <span style={{ fontSize: '10px', fontWeight: '600', color: '#1A7A4A', backgroundColor: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.2)', borderRadius: '6px', padding: '2px 8px', textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0 }}>
                       {q.type.replace('_', ' ')}
                     </span>
                   </div>
@@ -327,7 +452,7 @@ const overallAvg = avgRatingOverall()
                     return (
                       <div>
                         {avg && (
-                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '20px' }}>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
                             <span style={{ fontSize: '48px', fontWeight: '600', color: '#1A7A4A', lineHeight: '1' }}>{avg}</span>
                             <span style={{ fontSize: '18px', color: '#505050' }}>/ 5</span>
                             <span style={{ fontSize: '13px', color: '#505050', marginLeft: '4px' }}>average</span>
@@ -369,7 +494,6 @@ const overallAvg = avgRatingOverall()
                             <p style={{ fontSize: '12px', color: '#505050' }}>No · {noPct}%</p>
                           </div>
                         </div>
-                        {/* Split bar */}
                         <div style={{ height: '8px', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
                           <div style={{ width: `${yesPct}%`, backgroundColor: '#1A7A4A', transition: 'width 1s ease' }} />
                           <div style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.08)' }} />
@@ -425,7 +549,7 @@ const overallAvg = avgRatingOverall()
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {responses.map((response, i) => (
                 <div key={response.id} className="response-card" style={{ animationDelay: `${i * 0.05}s` }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.04)', flexWrap: 'wrap', gap: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ fontSize: '11px', fontWeight: '600', color: '#1A7A4A' }}>{responses.length - i}</span>
@@ -441,14 +565,13 @@ const overallAvg = avgRatingOverall()
                         <p style={{ fontSize: '11px', color: '#505050', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{q.label}</p>
                         {response.answers[q.id] !== undefined ? (
                           q.type === 'rating' ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                               <div style={{ display: 'flex', gap: '4px' }}>
                                 {[1,2,3,4,5].map(n => (
                                   <div key={n} style={{ width: '24px', height: '24px', borderRadius: '6px', backgroundColor: n <= response.answers[q.id] ? 'rgba(26,122,74,0.3)' : 'rgba(255,255,255,0.04)', border: `1px solid ${n <= response.answers[q.id] ? 'rgba(26,122,74,0.5)' : 'rgba(255,255,255,0.06)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <span style={{ fontSize: '11px', fontWeight: '500', color: n <= response.answers[q.id] ? '#1A7A4A' : '#333' }}>{n}</span>
                                   </div>
                                 ))}
-                            
                               </div>
                               <span style={{ fontSize: '13px', color: '#1A7A4A', fontWeight: '500' }}>{response.answers[q.id]} / 5</span>
                             </div>

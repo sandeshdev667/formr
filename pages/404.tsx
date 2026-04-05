@@ -53,6 +53,47 @@ export default function NotFound() {
             linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
           background-size: 40px 40px;
         }
+
+        .four-oh-four {
+          font-family: 'DM Serif Display', serif;
+          font-size: 160px;
+          font-weight: 400;
+          color: transparent;
+          -webkit-text-stroke: 1px rgba(26,122,74,0.3);
+          line-height: 1;
+          letter-spacing: -8px;
+          user-select: none;
+        }
+
+        .four-oh-four-icon {
+          width: 80px;
+          height: 80px;
+        }
+
+        .four-oh-four-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 36px;
+          font-weight: 400;
+          color: white;
+          margin-bottom: 12px;
+          letter-spacing: -0.5px;
+        }
+
+        @media (max-width: 480px) {
+          .four-oh-four {
+            font-size: 100px;
+            letter-spacing: -4px;
+          }
+
+          .four-oh-four-icon {
+            width: 50px;
+            height: 50px;
+          }
+
+          .four-oh-four-heading {
+            font-size: 26px;
+          }
+        }
       `}</style>
 
       <div className="grid-bg" style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
@@ -71,19 +112,10 @@ export default function NotFound() {
           {/* Floating 404 */}
           <div className="s1" style={{ animation: 'float 4s ease-in-out infinite', marginBottom: '32px' }}>
             <div style={{ position: 'relative', display: 'inline-block' }}>
-              <span style={{
-                fontFamily: 'DM Serif Display, serif',
-                fontSize: '160px',
-                fontWeight: '400',
-                color: 'transparent',
-                WebkitTextStroke: '1px rgba(26,122,74,0.3)',
-                lineHeight: '1',
-                letterSpacing: '-8px',
-                userSelect: 'none',
-              }}>404</span>
+              <span className="four-oh-four">404</span>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ width: '80px', height: '80px' }}>
-                  <svg viewBox="0 0 22 22" fill="none" width="80" height="80">
+                <div className="four-oh-four-icon">
+                  <svg viewBox="0 0 22 22" fill="none" width="100%" height="100%">
                     <rect x="1" y="1" width="8" height="8" rx="2" stroke="#1A7A4A" strokeWidth="1.5" opacity="0.6"/>
                     <rect x="3" y="3" width="4" height="4" rx="1" fill="#1A7A4A" opacity="0.6"/>
                     <rect x="13" y="1" width="8" height="8" rx="2" stroke="#1A7A4A" strokeWidth="1.5" opacity="0.6"/>
@@ -99,7 +131,7 @@ export default function NotFound() {
             </div>
           </div>
 
-          <h1 className="s2" style={{ fontFamily: 'DM Serif Display, serif', fontSize: '36px', fontWeight: '400', color: 'white', marginBottom: '12px', letterSpacing: '-0.5px' }}>
+          <h1 className="s2 four-oh-four-heading">
             Page not found
           </h1>
 

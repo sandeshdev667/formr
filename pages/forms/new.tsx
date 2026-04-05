@@ -176,8 +176,8 @@ export default function NewForm() {
   return (
     <>
     <Head>
-  <title>New form — Formr</title>
-</Head>
+      <title>New form — Formr</title>
+    </Head>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -260,6 +260,77 @@ export default function NewForm() {
           transition: transform 0.3s ease;
         }
         .chevron.open { transform: rotate(180deg); }
+
+        .new-form-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 40px;
+          font-weight: 400;
+          color: white;
+          margin-bottom: 8px;
+          letter-spacing: -0.5px;
+          line-height: 1.1;
+        }
+
+        .new-form-nav {
+          padding: 20px 32px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          z-index: 1;
+        }
+
+        .new-form-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 32px 24px;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .new-form-heading {
+            font-size: 28px;
+          }
+
+          .new-form-nav {
+            padding: 16px 16px;
+          }
+
+          .new-form-content {
+            padding: 20px 16px;
+            justify-content: flex-start;
+          }
+
+          .purpose-header {
+            padding: 14px 16px;
+            gap: 12px;
+          }
+
+          .mode-row {
+            padding: 0 12px 12px;
+            gap: 6px;
+          }
+
+          .mode-btn {
+            padding: 12px 6px;
+            gap: 6px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .new-form-heading {
+            font-size: 24px;
+          }
+
+          .new-form-content {
+            padding: 16px 12px;
+          }
+        }
       `}</style>
 
       <div className="grid-bg" style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
@@ -273,13 +344,13 @@ export default function NewForm() {
         }} />
 
         {/* Navbar */}
-        <div style={{ padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+        <div className="new-form-nav">
           <Logo onClick={() => router.push('/dashboard')} />
           <button className="back-btn" onClick={() => router.push('/dashboard')}>← Dashboard</button>
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', position: 'relative', zIndex: 1 }}>
+        <div className="new-form-content">
 
           <div style={{ width: '100%', maxWidth: '520px' }}>
 
@@ -288,7 +359,7 @@ export default function NewForm() {
               <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '12px' }}>
                 New form
               </p>
-              <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '40px', fontWeight: '400', color: 'white', marginBottom: '8px', letterSpacing: '-0.5px', lineHeight: '1.1' }}>
+              <h1 className="new-form-heading">
                 What do you need<br />the form for?
               </h1>
               <p style={{ fontSize: '14px', color: '#505050' }}>
