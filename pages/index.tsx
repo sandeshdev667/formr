@@ -41,6 +41,12 @@ function TestimonialTicker() {
           transition: border-color 0.2s;
         }
         .testimonial-card:hover { border-color: rgba(26,122,74,0.2); }
+        @media (max-width: 640px) {
+          .testimonial-card {
+            width: 260px;
+            padding: 16px 18px;
+          }
+        }
       `}</style>
       <div style={{ overflow: 'hidden' }}>
         <div className="ticker-track">
@@ -81,7 +87,6 @@ function AnalyticsDashboard() {
   }, [])
 
   const bars = [40, 65, 45, 80, 60, 90, 75]
-  const animatedBars = bars.map((b, i) => tick > 0 ? b : 0)
 
   return (
     <>
@@ -94,7 +99,7 @@ function AnalyticsDashboard() {
           from { opacity: 0; transform: translateY(4px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
+        @keyframes pulse-anim {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
         }
@@ -106,7 +111,6 @@ function AnalyticsDashboard() {
         padding: '20px',
         fontFamily: 'Inter, sans-serif',
       }}>
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
             <p style={{ fontSize: '11px', color: '#505050', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Total responses</p>
@@ -115,12 +119,11 @@ function AnalyticsDashboard() {
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.2)', borderRadius: '20px', padding: '5px 10px' }}>
-            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', animation: 'pulse 2s ease-in-out infinite' }} />
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', animation: 'pulse-anim 2s ease-in-out infinite' }} />
             <span style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '500' }}>Live</span>
           </div>
         </div>
 
-        {/* Bar chart */}
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '80px', marginBottom: '16px' }}>
           {bars.map((b, i) => (
             <div key={`${tick}-${i}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
@@ -136,14 +139,12 @@ function AnalyticsDashboard() {
           ))}
         </div>
 
-        {/* Days label */}
         <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
           {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
             <div key={i} style={{ flex: 1, textAlign: 'center', fontSize: '10px', color: i === 6 ? '#1A7A4A' : '#333' }}>{d}</div>
           ))}
         </div>
 
-        {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
           {[
             { label: 'Avg rating', value: '4.8★' },
@@ -164,12 +165,12 @@ function AnalyticsDashboard() {
 export default function Home() {
   const router = useRouter()
   useEffect(() => {
-  const checkSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) router.push('/dashboard')
-  }
-  checkSession()
-}, [])
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) router.push('/dashboard')
+    }
+    checkSession()
+  }, [])
 
   return (
     <>
@@ -283,6 +284,231 @@ export default function Home() {
         }
 
         .divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+        /* Hero heading */
+        .hero-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 72px;
+          font-weight: 400;
+          color: white;
+          line-height: 1.05;
+          margin-bottom: 24px;
+          letter-spacing: -2px;
+        }
+
+        /* Section headings */
+        .section-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 44px;
+          font-weight: 400;
+          color: white;
+          letter-spacing: -0.5px;
+        }
+
+        /* Steps grid */
+        .steps-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+
+        /* Modes grid */
+        .modes-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+
+        /* Coming soon grid */
+        .coming-soon-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+          align-items: center;
+        }
+
+        /* Coming soon card */
+        .coming-soon-card {
+          background: linear-gradient(135deg, #141414 0%, #0f1a14 100%);
+          border: 1px solid rgba(26,122,74,0.2);
+          border-radius: 24px;
+          padding: 64px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* CTA heading */
+        .cta-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 52px;
+          font-weight: 400;
+          color: white;
+          margin-bottom: 16px;
+          letter-spacing: -1px;
+          line-height: 1.05;
+        }
+
+        /* Trust bar */
+        .trust-bar {
+          margin-top: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 24px;
+        }
+
+        /* Hero subtitle */
+        .hero-subtitle {
+          font-size: 18px;
+          color: #505050;
+          margin-bottom: 40px;
+          line-height: 1.7;
+          max-width: 520px;
+          margin: 0 auto 40px;
+        }
+
+        /* Hero section padding */
+        .hero-content {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 100px 24px 80px;
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* Section padding */
+        .section-wrapper {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 80px 32px;
+        }
+
+        /* Navbar inner */
+        .nav-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        /* CTA wrapper */
+        .cta-wrapper {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 96px 32px;
+          text-align: center;
+        }
+
+        /* Coming soon heading */
+        .coming-soon-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 40px;
+          font-weight: 400;
+          color: white;
+          margin-bottom: 16px;
+          letter-spacing: -0.5px;
+          line-height: 1.15;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .hero-heading {
+            font-size: 40px;
+            letter-spacing: -1px;
+          }
+
+          .hero-subtitle {
+            font-size: 15px;
+            padding: 0 8px;
+          }
+
+          .hero-content {
+            padding: 60px 20px 50px;
+          }
+
+          .section-heading {
+            font-size: 28px;
+          }
+
+          .steps-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+
+          .modes-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+
+          .coming-soon-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+
+          .coming-soon-card {
+            padding: 32px 20px;
+          }
+
+          .coming-soon-heading {
+            font-size: 28px;
+          }
+
+          .cta-heading {
+            font-size: 32px;
+          }
+
+          .cta-wrapper {
+            padding: 60px 20px;
+          }
+
+          .section-wrapper {
+            padding: 48px 20px;
+          }
+
+          .trust-bar {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .nav-inner {
+            padding: 0 4px;
+          }
+
+          .feature-card {
+            padding: 20px;
+          }
+
+          .mode-card {
+            padding: 18px;
+          }
+
+          .btn-green {
+            padding: 12px 20px;
+            font-size: 14px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-heading {
+            font-size: 32px;
+            letter-spacing: -0.5px;
+          }
+
+          .section-heading {
+            font-size: 24px;
+          }
+
+          .cta-heading {
+            font-size: 28px;
+          }
+
+          .coming-soon-heading {
+            font-size: 24px;
+          }
+        }
       `}</style>
 
       <div style={{ backgroundColor: '#0D0D0D', minHeight: '100vh' }}>
@@ -296,7 +522,7 @@ export default function Home() {
           WebkitBackdropFilter: 'blur(12px)',
           padding: '0 32px',
         }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="nav-inner">
             <Logo />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button className="nav-link" onClick={() => router.push('/login')}>Sign in</button>
@@ -313,19 +539,19 @@ export default function Home() {
           <div style={{ position: 'absolute', top: '10%', left: '20%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.12) 0%, transparent 65%)', animation: 'orbFloat1 12s ease-in-out infinite', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '30%', right: '15%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.07) 0%, transparent 65%)', animation: 'orbFloat2 16s ease-in-out infinite', pointerEvents: 'none' }} />
 
-          <div style={{ maxWidth: '800px', margin: '0 auto', padding: '100px 24px 80px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <div className="hero-content">
 
             <div className="s1" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(26,122,74,0.1)', border: '1px solid rgba(26,122,74,0.25)', borderRadius: '100px', padding: '6px 14px', marginBottom: '32px' }}>
               <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', animation: 'pulse 2s ease-in-out infinite' }} />
               <span style={{ fontSize: '12px', color: '#1A7A4A', fontWeight: '500' }}>Simple forms. Real responses.</span>
             </div>
 
-            <h1 className="s2" style={{ fontFamily: 'DM Serif Display, serif', fontSize: '72px', fontWeight: '400', color: 'white', lineHeight: '1.05', marginBottom: '24px', letterSpacing: '-2px' }}>
+            <h1 className="s2 hero-heading">
               The cleanest way to<br />
               <span className="shimmer-text">collect feedback</span>
             </h1>
 
-            <p className="s3" style={{ fontSize: '18px', color: '#505050', marginBottom: '40px', lineHeight: '1.7', maxWidth: '520px', margin: '0 auto 40px' }}>
+            <p className="s3 hero-subtitle">
               Create beautiful forms in minutes, generate a QR code, and start collecting responses — no clutter, no complexity.
             </p>
 
@@ -339,7 +565,7 @@ export default function Home() {
             </div>
 
             {/* Trust bar */}
-            <div className="s5" style={{ marginTop: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
+            <div className="s5 trust-bar">
               {['Always free', 'No credit card', 'Instant QR codes'].map((item, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -356,14 +582,14 @@ export default function Home() {
         <div className="divider" />
 
         {/* How it works */}
-        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 32px' }}>
+        <div className="section-wrapper">
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '12px' }}>How it works</p>
-            <h2 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '44px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px' }}>
+            <h2 className="section-heading">
               Three steps to your first response
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+          <div className="steps-grid">
             {[
               { step: '01', title: 'Create your form', desc: 'Answer 3 quick questions and land on the perfect starting point. No blank canvas.' },
               { step: '02', title: 'Share via QR or link', desc: 'Get a print-ready QR code and a shareable link instantly. Perfect for physical spaces.' },
@@ -381,14 +607,14 @@ export default function Home() {
         <div className="divider" />
 
         {/* Three modes */}
-        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 32px' }}>
+        <div className="section-wrapper">
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '12px' }}>Three modes</p>
-            <h2 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '44px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px' }}>
+            <h2 className="section-heading">
               Pick the experience that fits
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+          <div className="modes-grid">
             {[
               { name: 'Quick', tag: 'Fast', desc: 'Minimal questions, big tap targets. Done in seconds. Perfect for receipts and table cards.', color: '#1A7A4A' },
               { name: 'Form', tag: 'Standard', desc: 'All questions visible, clean layout. Familiar and comfortable for surveys and info gathering.', color: '#A0A0A0' },
@@ -408,62 +634,51 @@ export default function Home() {
         <div className="divider" />
 
         {/* Coming soon */}
-        {/* Coming soon */}
-        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 32px' }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #141414 0%, #0f1a14 100%)',
-            border: '1px solid rgba(26,122,74,0.2)',
-            borderRadius: '24px',
-            padding: '64px',
-            position: 'relative',
-            overflow: 'hidden',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '48px',
-            alignItems: 'center',
-          }}>
+        <div className="section-wrapper">
+          <div className="coming-soon-card">
             {/* Background orb */}
             <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.12) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
-            {/* Left — text */}
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '16px' }}>Coming soon</p>
-              <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '40px', fontWeight: '400', color: 'white', marginBottom: '16px', letterSpacing: '-0.5px', lineHeight: '1.15' }}>
-                The form is just the beginning.
-              </h3>
-              <p style={{ fontSize: '15px', color: '#505050', lineHeight: '1.7', marginBottom: '28px' }}>
-                We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
-                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', flexShrink: 0 }} />
-                    <span style={{ fontSize: '13px', color: '#505050' }}>{item}</span>
-                  </div>
-                ))}
+            <div className="coming-soon-grid">
+              {/* Left — text */}
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <p style={{ fontSize: '11px', color: '#1A7A4A', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '16px' }}>Coming soon</p>
+                <h3 className="coming-soon-heading">
+                  The form is just the beginning.
+                </h3>
+                <p style={{ fontSize: '15px', color: '#505050', lineHeight: '1.7', marginBottom: '28px' }}>
+                  We're building response analytics so you don't just collect feedback — you understand it. Charts, trends, averages, and insights that actually tell you something.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {['Response trends', 'Rating averages', 'Completion rates'].map((item) => (
+                    <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1A7A4A', flexShrink: 0 }} />
+                      <span style={{ fontSize: '13px', color: '#505050' }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right — animated dashboard card */}
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <AnalyticsDashboard />
               </div>
             </div>
-
-    {/* Right — animated dashboard card */}
-    <div style={{ position: 'relative', zIndex: 1 }}>
-      <AnalyticsDashboard />
-    </div>
-  </div>
-</div>
-        
+          </div>
+        </div>
 
         <div className="divider" />
 
         {/* Testimonials ticker */}
-<div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', padding: '48px 0' }}>
-  <TestimonialTicker />
-</div>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', padding: '48px 0' }}>
+          <TestimonialTicker />
+        </div>
 
         <div className="divider" />
 
         {/* CTA */}
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '96px 32px', textAlign: 'center' }}>
-          <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '52px', fontWeight: '400', color: 'white', marginBottom: '16px', letterSpacing: '-1px', lineHeight: '1.05' }}>
+        <div className="cta-wrapper">
+          <h3 className="cta-heading">
             Ready to get started?
           </h3>
           <p style={{ fontSize: '16px', color: '#505050', marginBottom: '36px', lineHeight: '1.6' }}>

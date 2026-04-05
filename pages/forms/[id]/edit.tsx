@@ -314,6 +314,121 @@ export default function EditForm() {
           gap: 4px;
           margin-bottom: 8px;
         }
+
+        /* Layout classes */
+        .edit-nav-inner {
+          max-width: 960px;
+          margin: 0 auto;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .edit-nav-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .edit-nav-separator {
+          color: rgba(255,255,255,0.15);
+          font-size: 16px;
+        }
+
+        .edit-mode-banner-inner {
+          max-width: 960px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .edit-mode-desc {
+          font-size: 12px;
+          color: #505050;
+        }
+
+        .edit-main-layout {
+          max-width: 960px;
+          margin: 0 auto;
+          padding: 40px 32px;
+          display: grid;
+          grid-template-columns: 1fr 280px;
+          gap: 32px;
+          align-items: start;
+        }
+
+        .edit-sidebar {
+          position: sticky;
+          top: 120px;
+          opacity: 0;
+          animation: fadeUp 0.5s ease 0.2s forwards;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .edit-nav-inner {
+            padding: 0 4px;
+          }
+
+          .edit-nav-separator,
+          .back-btn {
+            display: none;
+          }
+
+          .edit-nav-left {
+            gap: 8px;
+          }
+
+          .save-btn {
+            padding: 8px 14px;
+            font-size: 12px;
+          }
+
+          .edit-mode-desc {
+            display: none;
+          }
+
+          .edit-main-layout {
+            grid-template-columns: 1fr;
+            padding: 24px 16px;
+            gap: 20px;
+          }
+
+          .edit-sidebar {
+            position: static;
+          }
+
+          .title-display {
+            font-size: 22px;
+            margin-bottom: 16px;
+          }
+
+          .title-input {
+            font-size: 22px;
+            margin-bottom: 16px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .edit-main-layout {
+            padding: 20px 12px;
+          }
+
+          .title-display {
+            font-size: 20px;
+          }
+
+          .title-input {
+            font-size: 20px;
+          }
+
+          .add-question-btn {
+            padding: 8px 12px;
+            font-size: 11px;
+          }
+        }
       `}</style>
 
       <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D' }}>
@@ -327,10 +442,10 @@ export default function EditForm() {
           WebkitBackdropFilter: 'blur(12px)',
           padding: '0 32px',
         }}>
-          <div style={{ maxWidth: '960px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="edit-nav-inner">
+            <div className="edit-nav-left">
               <Logo onClick={() => router.push('/dashboard')} />
-              <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>/</span>
+              <span className="edit-nav-separator">/</span>
               <button className="back-btn" style={{ padding: '4px 8px' }} onClick={() => router.push('/dashboard')}>
                 Dashboard
               </button>
@@ -347,21 +462,22 @@ export default function EditForm() {
           borderBottom: `1px solid ${config.border}`,
           padding: '10px 32px',
         }}>
-          <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="edit-mode-banner-inner">
             <span style={{
               fontSize: '10px', fontWeight: '600', color: config.color,
               backgroundColor: `${config.bg}`,
               border: `1px solid ${config.border}`,
               borderRadius: '6px', padding: '2px 10px',
               textTransform: 'uppercase', letterSpacing: '0.08em',
+              flexShrink: 0,
             }}>
               {config.label} mode
             </span>
-            <p style={{ fontSize: '12px', color: '#505050' }}>{config.description}</p>
+            <p className="edit-mode-desc">{config.description}</p>
           </div>
         </div>
 
-        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '40px 32px', display: 'grid', gridTemplateColumns: '1fr 280px', gap: '32px', alignItems: 'start' }}>
+        <div className="edit-main-layout">
 
           {/* Main editor */}
           <div style={{ opacity: 0, animation: 'fadeUp 0.5s ease 0.1s forwards' }}>
@@ -403,7 +519,7 @@ export default function EditForm() {
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     padding: '10px 14px 0',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '10px', color: '#333', fontWeight: '600' }}>Q{i + 1}</span>
                       <span style={{
                         fontSize: '10px', fontWeight: '600',
@@ -532,7 +648,7 @@ export default function EditForm() {
           </div>
 
           {/* Right sidebar */}
-          <div style={{ position: 'sticky', top: '120px', opacity: 0, animation: 'fadeUp 0.5s ease 0.2s forwards' }}>
+          <div className="edit-sidebar">
 
             {/* Mode tips */}
             <div style={{

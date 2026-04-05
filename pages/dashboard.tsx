@@ -168,8 +168,6 @@ const { data: allResponses } = formIds.length > 0
     setDeletingId(null)
   }
 
-  const totalResponses2 = forms.reduce((a, f) => a + (f.response_count || 0), 0)
-
   if (loading) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif' }}>
       <div style={{ textAlign: 'center' }}>
@@ -279,6 +277,147 @@ const { data: allResponses } = formIds.length > 0
           border-color: rgba(255,255,255,0.5);
           background: rgba(255,255,255,0.06);
         }
+
+        /* Responsive class-based layouts */
+        .dash-nav-inner {
+          max-width: 1280px;
+          margin: 0 auto;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .dash-nav-user {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .dash-nav-user-info {
+          text-align: right;
+        }
+
+        .dash-content {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 40px 32px;
+        }
+
+        .dash-greeting-heading {
+          font-family: 'DM Serif Display', serif;
+          font-size: 36px;
+          font-weight: 400;
+          color: white;
+          letter-spacing: -0.5px;
+          margin-bottom: 4px;
+        }
+
+        .dash-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 12px;
+          margin-bottom: 36px;
+        }
+
+        .dash-main-layout {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: 24px;
+          align-items: start;
+        }
+
+        .dash-forms-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 14px;
+        }
+
+        .dash-activity-panel {
+          position: sticky;
+          top: 80px;
+          opacity: 0;
+          animation: slideIn 0.5s ease 0.3s forwards;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .dash-nav-inner {
+            padding: 0 4px;
+          }
+
+          .dash-nav-user-info {
+            display: none;
+          }
+
+          .dash-nav-user {
+            gap: 8px;
+          }
+
+          .dash-content {
+            padding: 24px 16px;
+          }
+
+          .dash-greeting-heading {
+            font-size: 26px;
+          }
+
+          .dash-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+          }
+
+          .stat-card {
+            padding: 14px 16px;
+          }
+
+          .stat-card p:last-child {
+            font-size: 24px !important;
+          }
+
+          .dash-main-layout {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .dash-forms-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+
+          .dash-activity-panel {
+            position: static;
+          }
+
+          .signout-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+          }
+
+          .create-btn {
+            padding: 8px 14px;
+            font-size: 12px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .dash-greeting-heading {
+            font-size: 22px;
+          }
+
+          .dash-content {
+            padding: 20px 12px;
+          }
+
+          .stat-card {
+            padding: 12px 14px;
+          }
+
+          .stat-card p:last-child {
+            font-size: 20px !important;
+          }
+        }
       `}</style>
 
       <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D', fontFamily: 'Inter, sans-serif' }}>
@@ -292,10 +431,10 @@ const { data: allResponses } = formIds.length > 0
           WebkitBackdropFilter: 'blur(12px)',
           padding: '0 32px',
         }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="dash-nav-inner">
             <Logo />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ textAlign: 'right' }}>
+            <div className="dash-nav-user">
+              <div className="dash-nav-user-info">
                 <p style={{ fontSize: '13px', fontWeight: '500', color: 'white' }}>{fullName}</p>
                 <p style={{ fontSize: '11px', color: '#505050' }}>{user?.email}</p>
               </div>
@@ -304,11 +443,11 @@ const { data: allResponses } = formIds.length > 0
           </div>
         </nav>
 
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 32px' }}>
+        <div className="dash-content">
 
           {/* Greeting */}
           <div style={{ marginBottom: '32px', opacity: 0, animation: 'fadeUp 0.5s ease 0.05s forwards' }}>
-            <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '36px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px', marginBottom: '4px' }}>
+            <h1 className="dash-greeting-heading">
                 {getGreeting()}, <TypewriterName name={firstName} />
             </h1>
             <p style={{ fontSize: '14px', color: '#505050' }}>
@@ -319,7 +458,7 @@ const { data: allResponses } = formIds.length > 0
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '36px' }}>
+          <div className="dash-stats-grid">
             {[
               { label: 'Total forms', value: forms.length, delay: '0.1s' },
               { label: 'Total responses', value: totalResponses, delay: '0.15s', accent: true },
@@ -336,7 +475,7 @@ const { data: allResponses } = formIds.length > 0
           </div>
 
           {/* Main layout */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
+          <div className="dash-main-layout">
 
             {/* Left — Forms */}
             <div>
@@ -363,11 +502,12 @@ const { data: allResponses } = formIds.length > 0
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
+              <div className="dash-forms-grid">
                 {forms.map((form, i) => {
                   const mc = modeColors[form.mode] || modeColors.form
                   return (
                     <div
+                      key={form.id}
                       className={`form-card ${visibleCards.has(i) ? 'visible' : ''} ${!form.is_active ? 'inactive' : ''}`}
                         style={{
                         animationDelay: `${0.1 + i * 0.07}s`,
@@ -476,7 +616,7 @@ const { data: allResponses } = formIds.length > 0
             </div>
 
             {/* Right — Activity panel */}
-            <div style={{ position: 'sticky', top: '80px', opacity: 0, animation: 'slideIn 0.5s ease 0.3s forwards' }}>
+            <div className="dash-activity-panel">
               <div style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '18px', overflow: 'hidden' }}>
 
                 {/* Panel header */}
