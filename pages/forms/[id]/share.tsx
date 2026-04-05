@@ -178,6 +178,137 @@ export default function ShareForm() {
           font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
           transition: all 0.2s; border: 1px solid;
         }
+
+        /* Layout classes */
+        .share-nav-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .share-nav-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .share-nav-separator {
+          color: rgba(255,255,255,0.15);
+          font-size: 16px;
+        }
+
+        .share-nav-dashboard {
+          display: block;
+        }
+
+        .share-content {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 48px 32px;
+        }
+
+        .share-header-title {
+          font-family: 'DM Serif Display', serif;
+          font-size: 32px;
+          font-weight: 400;
+          color: white;
+          letter-spacing: -0.5px;
+        }
+
+        .share-two-col {
+          display: grid;
+          grid-template-columns: 1fr 380px;
+          gap: 24px;
+          align-items: start;
+        }
+
+        .share-qr-card {
+          background: #141414;
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 20px;
+          padding: 48px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .share-actions-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+          .share-nav-inner {
+            padding: 0 4px;
+          }
+
+          .share-nav-separator,
+          .share-nav-edit-btn {
+            display: none;
+          }
+
+          .share-nav-left {
+            gap: 8px;
+          }
+
+          .share-content {
+            padding: 24px 16px;
+          }
+
+          .share-header-title {
+            font-size: 24px;
+          }
+
+          .share-two-col {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .share-qr-card {
+            padding: 32px 20px;
+          }
+
+          .share-icon-btn {
+            padding: 10px 6px;
+            min-width: 52px;
+          }
+
+          .share-icon-btn svg {
+            width: 22px;
+            height: 22px;
+          }
+
+          .download-btn,
+          .secondary-btn {
+            padding: 12px;
+            font-size: 13px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .share-content {
+            padding: 20px 12px;
+          }
+
+          .share-header-title {
+            font-size: 20px;
+          }
+
+          .share-qr-card {
+            padding: 24px 16px;
+          }
+
+          .share-actions-grid {
+            grid-template-columns: 1fr;
+          }
+        }
       `}</style>
 
       <div style={{ minHeight: '100vh', backgroundColor: '#0D0D0D' }}>
@@ -191,11 +322,11 @@ export default function ShareForm() {
           WebkitBackdropFilter: 'blur(12px)',
           padding: '0 32px',
         }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="share-nav-inner">
+            <div className="share-nav-left">
               <Logo onClick={() => router.push('/dashboard')} />
-              <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>/</span>
-              <button className="back-btn" style={{ padding: '4px 8px' }} onClick={() => router.push(`/forms/${id}/edit`)}>
+              <span className="share-nav-separator">/</span>
+              <button className="back-btn share-nav-edit-btn" style={{ padding: '4px 8px' }} onClick={() => router.push(`/forms/${id}/edit`)}>
                 ← Edit form
               </button>
             </div>
@@ -203,12 +334,12 @@ export default function ShareForm() {
           </div>
         </nav>
 
-        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 32px' }}>
+        <div className="share-content">
 
           {/* Header */}
           <div style={{ marginBottom: '40px', opacity: 0, animation: 'fadeUp 0.4s ease 0.05s forwards' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '32px', fontWeight: '400', color: 'white', letterSpacing: '-0.5px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+              <h1 className="share-header-title">
                 {form?.title}
               </h1>
               <span style={{
@@ -225,24 +356,14 @@ export default function ShareForm() {
             </p>
           </div>
 
-          {/* Two column layout */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px', alignItems: 'start' }}>
+          {/* Two column layout — on mobile: QR first, then actions below */}
+          <div className="share-two-col">
 
-            {/* Left — QR + Share */}
+            {/* Left — QR + Share (appears first on mobile) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', opacity: 0, animation: 'fadeUp 0.5s ease 0.1s forwards' }}>
 
               {/* QR Card */}
-              <div style={{
-                background: '#141414',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: '20px',
-                padding: '48px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-              }}>
+              <div className="share-qr-card">
                 <div style={{ position: 'absolute', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(26,122,74,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
                 <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px 20px 14px', position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
                   <QRCodeSVG
@@ -270,6 +391,17 @@ export default function ShareForm() {
                 </div>
                 <p style={{ fontSize: '12px', color: '#505050', marginTop: '16px', position: 'relative', zIndex: 1 }}>Scan to open the form</p>
               </div>
+
+              {/* Download + Print — shown here on mobile for quick access */}
+              <button className="download-btn" onClick={downloadQR}>Download QR code</button>
+              <button className="secondary-btn" onClick={printQR}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="2" y="5" width="10" height="7" rx="1" stroke="white" strokeWidth="1.2"/>
+                  <path d="M4 5V3a1 1 0 011-1h4a1 1 0 011 1v2" stroke="white" strokeWidth="1.2"/>
+                  <path d="M4 9h6M4 11h4" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
+                </svg>
+                Print QR code
+              </button>
 
               {/* Share icons */}
               <div style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '20px' }}>
@@ -359,7 +491,7 @@ export default function ShareForm() {
               </div>
             </div>
 
-            {/* Right — Actions + Info */}
+            {/* Right — Toggle, Link, Details (scrollable below on mobile) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', opacity: 0, animation: 'fadeUp 0.5s ease 0.2s forwards' }}>
 
               {/* Active toggle */}
@@ -412,17 +544,6 @@ export default function ShareForm() {
                 </button>
               </div>
 
-              {/* Download + Print */}
-              <button className="download-btn" onClick={downloadQR}>Download QR code</button>
-              <button className="secondary-btn" onClick={printQR}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <rect x="2" y="5" width="10" height="7" rx="1" stroke="white" strokeWidth="1.2"/>
-                  <path d="M4 5V3a1 1 0 011-1h4a1 1 0 011 1v2" stroke="white" strokeWidth="1.2"/>
-                  <path d="M4 9h6M4 11h4" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
-                </svg>
-                Print QR code
-              </button>
-
               {/* Form details */}
               <div style={{ background: '#141414', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '20px' }}>
                 <p style={{ fontSize: '11px', color: '#505050', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Form details</p>
@@ -443,7 +564,7 @@ export default function ShareForm() {
               </div>
 
               {/* View responses + Preview */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <div className="share-actions-grid">
                 <button
                   className="action-btn"
                   onClick={() => router.push(`/forms/${id}/responses`)}
